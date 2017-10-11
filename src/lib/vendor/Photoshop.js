@@ -424,6 +424,23 @@
         return id;
     };
 
+    PhotoshopClient.prototype.sendImage = function (imageBuffer, imageType=1) {
+
+        const id = this._lastMessageID = (this._lastMessageID + 1) % MAX_MESSAGE_ID;
+        const payloadBuffer = new Buffer(PAYLOAD_HEADER_LENGTH + imageBuffer.length + 1);
+       
+        payloadBuffer.writeUInt32BE(PROTOCOL_VERSION, PAYLOAD_PROTOCOL_OFFSET);
+        payloadBuffer.writeUInt32BE(id, PAYLOAD_ID_OFFSET);
+        payloadBuffer.writeUInt32BE(MESSAGE_TYPE_PIXMAP, PAYLOAD_TYPE_OFFSET);
+
+        payloadBuffer.writeInt8(imageType, PAYLOAD_HEADER_LENGTH);
+        imageBuffer.copy(payloadBuffer, PAYLOAD_HEADER_LENGTH + 1);
+
+        this._sendMessage(payloadBuffer);
+        
+        return id;
+    };
+
     PhotoshopClient.prototype.sendCommand = function (javascript) {
         var id = this._lastMessageID = (this._lastMessageID + 1) % MAX_MESSAGE_ID,
             codeBuffer = new Buffer(javascript, "utf8"),
