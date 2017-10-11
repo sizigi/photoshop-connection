@@ -26,5 +26,5 @@ photoshopConnection.createClient(options)
 		photoshopClient.sendCommand(`alert('Hello from ExtendScript!');`)
 	})
 	.catch((err) => {
-		console.log(`Connection Error: ${err}`)
+		console.log(`Connection Error: ${err.stack}`)
 	})
